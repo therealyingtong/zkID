@@ -33,7 +33,7 @@ jobs:
         run: circom --version
 
       - name: Install dependencies
-        run: cd packages/jwt-es256-circom && yarn
+        run: cd wallet-unit-poc/packages/jwt-es256-circom && yarn
 
       - name: Run tests
-        run: cd packages/jwt-es256-circom && yarn test
+        run: cd wallet-unit-poc/packages/jwt-es256-circom && yarn test
