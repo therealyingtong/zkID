@@ -789,7 +789,7 @@ camelcase@^6.0.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
-chai@^4.3.6, chai@^4.3.7:
+chai@^4.3.6:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.5.0.tgz#707e49923afdd9b13a8b0b47d33d732d13812fd8"
   integrity sha512-RITGBfijLkBddZvnn8jdqoTypxvqbOLYQkGGxXzeFjVHvudaPw0HNFD9x928/eUwYWd2dPCugVqspGALTZZQKw==
@@ -875,15 +875,14 @@ circom_tester@^0.0.21:
     tmp-promise "^3.0.3"
     util "^0.12.5"
 
-circomkit@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/circomkit/-/circomkit-0.1.0.tgz#f44cf86d46b3a3dff5a4958b6450f494d6fa9970"
-  integrity sha512-Mnc9IuOoaN7FitfURvbg2Q5j62S7/zQl6l18u5dcIhZg3Ot9MZYLiGIotCaF1Gfp/vAUKnvO2lnS3Xc1TdTISA==
+circomkit@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/circomkit/-/circomkit-0.3.3.tgz#9e67fdbad2f21fd927c7e84c1e589ba22b6d7b69"
+  integrity sha512-ulcWN4zNAoqPRbIto1PD4wFZQdGUBBVoY8lOakkRk3CB5iykOm9XEwVK/KJhLVe9vzODTp2iMJo4Tf/8DY9/0w==
   dependencies:
-    chai "^4.3.7"
     circom_tester "^0.0.19"
-    loglevel "^1.8.1"
-    snarkjs "^0.7.0"
+    commander "^12.1.0"
+    loglevel "^1.9.2"
 
 circomlib@^2.0.5:
   version "2.0.5"
@@ -925,6 +924,11 @@ commander@^11.0.0:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-11.1.0.tgz#62fdce76006a68e5c1ab3314dc92e800eb83d906"
   integrity sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==
+
+commander@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-12.1.0.tgz#01423b36f501259fdaac4d0e4d60c96c991585d3"
+  integrity sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -1627,7 +1631,7 @@ log-symbols@^4.1.0:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
 
-loglevel@^1.8.1:
+loglevel@^1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.9.2.tgz#c2e028d6c757720107df4e64508530db6621ba08"
   integrity sha512-HgMmCqIJSAKqo68l0rS2AanEWfkxaZ5wNiEFb5ggm08lDs9Xl2KxBlX3PTcaD2chBM1gXAYf491/M2Rv8Jwayg==
@@ -1964,7 +1968,7 @@ snarkjs@0.5.0, "snarkjs@https://github.com/sampritipanda/snarkjs.git#fef81fc51d1
     logplease "^1.2.15"
     r1csfile "0.0.41"
 
-snarkjs@^0.7.0, snarkjs@^0.7.3, snarkjs@^0.7.5:
+snarkjs@^0.7.3, snarkjs@^0.7.5:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/snarkjs/-/snarkjs-0.7.5.tgz#334d83b61468bdffbbf922b20734ca47be50b8ab"
   integrity sha512-h+3c4rXZKLhLuHk4LHydZCk/h5GcNvk5GjVKRRkHmfb6Ntf8gHOA9zea3g656iclRuhqQ3iKDWFgiD9ypLrKiA==
