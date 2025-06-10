@@ -43,9 +43,12 @@ template JWT(
     signal input currentMonth;
     signal input currentDay;
 
+    signal input decodeFlags[maxMatches];
+
     component claimDecoder = ClaimDecoder(maxMatches, maxClaimsLength);
     claimDecoder.claims <== claims;
     claimDecoder.claimLengths <== claimLengths;
+    claimDecoder.decodeFlags <== decodeFlags;
         
     ClaimComparator(maxMatches, maxSubstringLength)(claimDecoder.claimHashes ,claimLengths, matchSubstring, matchLength);
 

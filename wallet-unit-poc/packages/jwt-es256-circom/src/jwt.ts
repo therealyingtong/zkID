@@ -34,7 +34,8 @@ export function generateJwtInputs(
   token: string,
   pk: JwkEcdsaPublicKey | PemPublicKey,
   matches: string[],
-  claims: string[]
+  claims: string[],
+  decodeFlags: number[]
 ) {
   // we are not checking the JWT token format, assuming that is correct
   const [b64header, b64payload, b64signature] = token.split(".");
@@ -89,5 +90,6 @@ export function generateJwtInputs(
     currentYear,
     currentMonth,
     currentDay,
+    decodeFlags,
   };
 }

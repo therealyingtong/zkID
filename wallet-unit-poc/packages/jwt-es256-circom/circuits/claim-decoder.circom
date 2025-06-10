@@ -14,12 +14,14 @@ include "utils.circom";
 template ClaimDecoder(maxMatches, maxClaimsLength) {
     var decodedLen = (maxClaimsLength * 3) / 4;
 
-    signal input claims[maxMatches][maxClaimsLength];  
-    signal input claimLengths[maxMatches];      
+    signal input claims[maxMatches][maxClaimsLength];
+    signal input claimLengths[maxMatches];
+    signal input decodeFlags[maxMatches];
 
     signal output decodedClaims[maxMatches][decodedLen];
 
     component paddedClaims[maxMatches];
+    signal paddedOrConst[maxMatches][maxClaimsLength];
     component claimDecoders[maxMatches];
 
     for (var i = 0; i < maxMatches; i++) {
@@ -28,11 +30,17 @@ template ClaimDecoder(maxMatches, maxClaimsLength) {
         paddedClaims[i].startIndex <== 0;
         paddedClaims[i].length <== claimLengths[i];
 
+        for (var j = 0; j < maxClaimsLength; j++) {
+            paddedOrConst[i][j] <== paddedClaims[i].out[j] * decodeFlags[i] + 65 * (1 - decodeFlags[i]);
+        }
+
         claimDecoders[i] = Base64Decode(decodedLen);
-        claimDecoders[i].in <== paddedClaims[i].out;
+        claimDecoders[i].in <== paddedOrConst[i];
+
+        decodeFlags[i] * decodeFlags[i] === decodeFlags[i];
 
         for (var j = 0; j < decodedLen; j++) {
-            decodedClaims[i][j] <== claimDecoders[i].out[j];
+            decodedClaims[i][j] <== claimDecoders[i].out[j] * decodeFlags[i];
         }
     }
 

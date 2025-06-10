@@ -17,6 +17,7 @@ describe("JWT Verifier", () => {
       "matchIndex",
       "claims",
       "claimLengths",
+      "decodeFlags",
       "currentYear",
       "currentMonth",
       "currentDay"
@@ -53,11 +54,12 @@ describe("JWT Verifier", () => {
       };
 
       const params = generateJwtCircuitParams([43, 6, 2048, 256, 2000, 3, 50, 128]);
-      const inputs = generateJwtInputs(params, token, jwk, hashedClaims, claims);
+
+      const decodeFlags = [0, 1, 0];
+      const inputs = generateJwtInputs(params, token, jwk, hashedClaims, claims, decodeFlags);
 
       const witness = await circuit.calculateWitness(inputs);
 
-    
       await circuit.expectConstraintPass(witness);
     });
   });

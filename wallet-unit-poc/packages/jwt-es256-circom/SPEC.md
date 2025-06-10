@@ -47,6 +47,7 @@ This document describes the circuits used for privacy-preserving identity verifi
 | `matchIndex`     | Starting index of each substring within the payload      |
 | `claims`         | Array of raw Base64-encoded claims                       |
 | `claimLengths`   | Length of each claim                                     |
+| `decodeFlags`    | Flags indicating which claims should be decoded (0/1)     |
 | `currentYear`    | Current year for age verification                        |
 | `currentMonth`   | Current month for age verification                       |
 | `currentDay`     | Current day for age verification                         |
@@ -71,7 +72,9 @@ This document describes the circuits used for privacy-preserving identity verifi
 
 2.  **ClaimDecoder**
 
-    - Decode JWT claims from Base64 format.
+    - Decode JWT claims from Base64 format only when the corresponding `decodeFlags[i]` is `1`.
+
+    - Claims with `decodeFlags[i]` set to `0` are replaced with a padded Base64 string of `'A'` characters so that decoding always succeeds.
 
     - Hash decoded raw claims using SHA-256.
 
