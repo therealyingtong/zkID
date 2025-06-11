@@ -43,24 +43,6 @@ template ClaimDecoder(maxMatches, maxClaimsLength) {
             decodedClaims[i][j] <== claimDecoders[i].out[j] * decodeFlags[i];
         }
     }
-
-    component claimHasher[maxMatches];
-    component hashByteConvert[maxMatches][32];
-    signal output claimHashes[maxMatches][32]; 
-
-    for (var i = 0; i < maxMatches; i++) {
-        claimHasher[i] = Sha256Bytes(maxClaimsLength);
-        claimHasher[i].paddedIn <== claims[i];
-        claimHasher[i].paddedInLength <== maxClaimsLength;
-
-         for (var j = 0; j < 32; j++) {
-            hashByteConvert[i][j] = Bits2Num(8);
-            for (var k = 0; k < 8; k++) {
-                    hashByteConvert[i][j].in[7-k] <== claimHasher[i].out[j * 8 + k];
-                 }
-        claimHashes[i][j] <== hashByteConvert[i][j].out;
-        }
-    }
 }   
 
 template ClaimComparator(maxMatches , maxSubstringLength){
@@ -93,6 +75,28 @@ template ClaimComparator(maxMatches , maxSubstringLength){
             eq[i][j].in[0] <== claimHashes[i][j];
             eq[i][j].in[1] <== sdDecoders[i].base64Out[j];
             eq[i][j].out * useClaim[i] === useClaim[i];
+        }
+    }
+}
+
+template ClaimHasher(maxMatches, maxClaimsLength){
+    signal input claims[maxMatches][maxClaimsLength];
+
+    component claimHasher[maxMatches];
+    component hashByteConvert[maxMatches][32];
+    signal output claimHashes[maxMatches][32]; 
+
+    for (var i = 0; i < maxMatches; i++) {
+        claimHasher[i] = Sha256Bytes(maxClaimsLength);
+        claimHasher[i].paddedIn <== claims[i];
+        claimHasher[i].paddedInLength <== maxClaimsLength;
+
+         for (var j = 0; j < 32; j++) {
+            hashByteConvert[i][j] = Bits2Num(8);
+            for (var k = 0; k < 8; k++) {
+                    hashByteConvert[i][j].in[7-k] <== claimHasher[i].out[j * 8 + k];
+                 }
+        claimHashes[i][j] <== hashByteConvert[i][j].out;
         }
     }
 }

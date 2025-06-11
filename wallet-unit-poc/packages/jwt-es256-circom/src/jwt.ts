@@ -68,15 +68,12 @@ export function generateJwtInputs(
     matchIndex.push(0);
   }
 
-  let ageClaim = atob(claims[1]).split(",")[1].replace(/"/g, "").trim();
-  assert.ok(ageClaim === "roc_birthday");
-
   let { claimArray, claimLengths } = encodeClaims(claims, params.maxMatches, params.maxClaimLength);
 
-  const now = new Date();
-  const currentYear = BigInt(now.getUTCFullYear());
-  const currentMonth = BigInt(now.getUTCMonth() + 1);
-  const currentDay = BigInt(now.getUTCDate());
+  // const now = new Date();
+  // const currentYear = BigInt(now.getUTCFullYear());
+  // const currentMonth = BigInt(now.getUTCMonth() + 1);
+  // const currentDay = BigInt(now.getUTCDate());
 
   return {
     ...es256Inputs,
@@ -87,9 +84,6 @@ export function generateJwtInputs(
     matchIndex,
     claims: claimArray,
     claimLengths,
-    currentYear,
-    currentMonth,
-    currentDay,
     decodeFlags,
   };
 }
