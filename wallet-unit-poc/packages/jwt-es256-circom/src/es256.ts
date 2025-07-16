@@ -1,8 +1,9 @@
 import { p256 } from "@noble/curves/p256";
 import { sha256Pad } from "@zk-email/helpers";
-import { sha256 } from "@noble/hashes/sha256";
+import { sha256 } from "@noble/hashes/sha2";
 import { strict as assert } from "assert";
 import { bigintToLimbs, extractXYFromPEM, base64ToBigInt, uint8ArrayToBigIntArray } from "./utils.ts";
+import { Field } from "@noble/curves/abstract/modular";
 
 // ES256 Circuit Parameters
 export interface Es256CircuitParams {
@@ -46,8 +47,9 @@ export function generateES256Inputs(
   // decode signature
   let sig = Buffer.from(b64Signature, "base64url");
   let sig_decoded = p256.Signature.fromCompact(sig.toString("hex"));
-  let sig_r = bigintToLimbs(sig_decoded.r, 43, 6);
-  let sig_s = bigintToLimbs(sig_decoded.s, 43, 6);
+  // We need to invert `s` in the scalar field of p256
+  let Fq = Field(BigInt("0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551"));
+  let sig_s_inverse = Fq.inv(sig_decoded.s);
 
   // decode public key
   let x, y;
@@ -64,7 +66,7 @@ export function generateES256Inputs(
   }
 
   // internal check
-  let pubkey = new p256.ProjectivePoint(x, y, 1n);
+  let pubkey = new p256.Point(x, y, 1n);
   let check = p256.verify(sig.toString("hex"), Buffer.from(sha256(message)).toString("hex"), pubkey.toHex());
   assert.ok(check, "internal check of signature failed");
 
@@ -76,9 +78,10 @@ export function generateES256Inputs(
 
   // return inputs
   return {
-    sig_r: sig_r,
-    sig_s: sig_s,
-    pubkey: [bigintToLimbs(x, 43, 6), bigintToLimbs(y, 43, 6)],
+    sig_r: sig_decoded.r,
+    sig_s_inverse: sig_s_inverse,
+    pubKeyX: x,
+    pubKeyY: y,
     message: uint8ArrayToBigIntArray(messagePadded),
     messageLength: messagePaddedLen,
   };
