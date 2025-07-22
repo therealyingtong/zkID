@@ -7,6 +7,7 @@ include "@zk-email/circuits/utils/hash.circom";
 include "@zk-email/circuits/lib/sha.circom";
 include "@zk-email/circuits/lib/base64.circom";
 include "ecdsa/ecdsa.circom";
+include "utils.circom";
 
 template ES256(
     n,
@@ -33,16 +34,15 @@ template ES256(
     // Calculate SHA256 hash of the message
     sha <== Sha256Bytes(maxMessageLength)(message, messageLength);
 
-    // FIXME: This fails if message hash is greater than the scalar field order
-    // We should take message hash mod q, since it is an element of the scalar field
-    component message_hash_mod_p = Bits2Num(256);
-    for (var i = 0; i < 256; i++) message_hash_mod_p.in[i] <== sha[255 - i];
+    // Reduce message hash modulo scalar field order q
+    component message_hash_mod_q = HashModScalarField();
+    message_hash_mod_q.hash <== sha;
 
     // Verify the signature
     component ecdsa = ECDSA();
     ecdsa.s_inverse <== sig_s_inverse;
     ecdsa.r <== sig_r;
-    ecdsa.m <== message_hash_mod_p.out;
+    ecdsa.m <== message_hash_mod_q.out;
     ecdsa.pubKeyX <== pubKeyX;
     ecdsa.pubKeyY <== pubKeyY;
 }
