@@ -28,9 +28,10 @@ template JWT(
     signal input messageLength; // Length of the message signed in the JWT
     signal input periodIndex; // Index of the period in the JWT message
 
-    signal input sig_r[k];
-    signal input sig_s[k];
-    signal input pubkey[2][k];
+    signal input sig_r;
+    signal input sig_s_inverse;
+    signal input pubKeyX;
+    signal input pubKeyY;
 
     signal input matchesCount;
     signal input matchSubstring[maxMatches][maxSubstringLength];
@@ -56,8 +57,9 @@ template JWT(
     es256.message <== message;
     es256.messageLength <== messageLength;
     es256.sig_r <== sig_r;
-    es256.sig_s <== sig_s;
-    es256.pubkey <== pubkey;
+    es256.sig_s_inverse <== sig_s_inverse;
+    es256.pubKeyX <== pubKeyX;
+    es256.pubKeyY <== pubKeyY;
 
     component extractor = HeaderPayloadExtractor(maxMessageLength,maxB64HeaderLength, maxB64PayloadLength);
     extractor.message <== message;
