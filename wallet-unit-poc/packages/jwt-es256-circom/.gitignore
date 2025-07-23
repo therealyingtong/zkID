@@ -120,3 +120,7 @@ tmp.ptau
 # ignore auto generated test circuits
 circuits/test
 ptau
+
+# Rust
+/target/
+Cargo.lock

@@ -11,10 +11,10 @@
     "start": "npx ts-node ./src/index.ts",
     "test": "NODE_OPTIONS=--max-old-space-size=8192 npx mocha --timeout 900000",
     "save_input_file": "npx ts-node src/save_inputs.ts",
-    "compile": "npx circomkit compile jwt",
-    "setup": "npx circomkit setup jwt",
-    "prove": "npx circomkit prove jwt",
-    "verify": "npx circomkit verify jwt"
+    "compile": "npx circomkit compile add",
+    "setup": "npx circomkit setup add",
+    "prove": "npx circomkit prove add",
+    "verify": "npx circomkit verify add"
   },
   "dependencies": {
     "@aws-crypto/sha256-js": "^5.2.0",

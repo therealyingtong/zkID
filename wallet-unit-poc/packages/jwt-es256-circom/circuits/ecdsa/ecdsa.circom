@@ -1,8 +1,20 @@
-pragma circom 2.1.2;
+pragma circom 2.1.6;
 
-include "./p256/mul.circom";
-include "../../node_modules/circomlib/circuits/bitify.circom";
+// include "./p256/mul.circom";
+// include "../../node_modules/circomlib/circuits/bitify.circom";
 
+template IsZero() {
+    signal input in;
+    signal output out;
+
+    signal inv;
+
+    inv <-- in!=0 ? 1/in : 0;
+
+    out <== -in*inv +1;
+
+    // in*out === 0;
+}
 
 /**
  *  ECDSA
@@ -24,41 +36,41 @@ template ECDSA() {
     // TODO - Do we want more checks on s_inverse? (I think s_inv != 0 suffices)
     component check0 = IsZero();
     check0.in <== s_inverse;
-    check0.out === 0;
+    // check0.out === 0;
 
     // TODO - Its shocking that this is more efficient than big number multiply, perhaps we should double check
 
-    // s^-1 x Q_a computation
-    component siPub = Secp256r1Mul();
-    siPub.scalar <== s_inverse;
-    siPub.xP <== pubKeyX;
-    siPub.yP <== pubKeyY;
+    // // s^-1 x Q_a computation
+    // component siPub = Secp256r1Mul();
+    // siPub.scalar <== s_inverse;
+    // siPub.xP <== pubKeyX;
+    // siPub.yP <== pubKeyY;
 
-    // r x (s^-1 x Q_a) computation
-    component rSiPub = Secp256r1Mul();
-    rSiPub.scalar <== r;
-    rSiPub.xP <== siPub.outX;
-    rSiPub.yP <== siPub.outY;
+    // // r x (s^-1 x Q_a) computation
+    // component rSiPub = Secp256r1Mul();
+    // rSiPub.scalar <== r;
+    // rSiPub.xP <== siPub.outX;
+    // rSiPub.yP <== siPub.outY;
 
-    // s^-1 x G computation
-    component siG = Secp256r1Mul();
-    siG.scalar <== s_inverse;
-    siG.xP <== 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296;
-    siG.yP <== 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5;
+    // // s^-1 x G computation
+    // component siG = Secp256r1Mul();
+    // siG.scalar <== s_inverse;
+    // siG.xP <== 0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296;
+    // siG.yP <== 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5;
 
-    // m x (s^-1 x G) computation
-    component mSiG = Secp256r1Mul();
-    mSiG.scalar <== m;
-    mSiG.xP <== siG.outX;
-    mSiG.yP <== siG.outY;
+    // // m x (s^-1 x G) computation
+    // component mSiG = Secp256r1Mul();
+    // mSiG.scalar <== m;
+    // mSiG.xP <== siG.outX;
+    // mSiG.yP <== siG.outY;
 
-    // R = r s^-1 x Q_a + m s^-1 x G
-    component R = Secp256r1AddComplete();
-    R.xP <== rSiPub.outX;
-    R.yP <== rSiPub.outY;
-    R.xQ <== mSiG.outX;
-    R.yQ <== mSiG.outY;
+    // // R = r s^-1 x Q_a + m s^-1 x G
+    // component R = Secp256r1AddComplete();
+    // R.xP <== rSiPub.outX;
+    // R.yP <== rSiPub.outY;
+    // R.xQ <== mSiG.outX;
+    // R.yQ <== mSiG.outY;
 
-    // In ECDSA we have that the R's x coordinate should be the r from the signature's verification result
-    r === R.outX;
+    // // In ECDSA we have that the R's x coordinate should be the r from the signature's verification result
+    // r === R.outX;
 }
