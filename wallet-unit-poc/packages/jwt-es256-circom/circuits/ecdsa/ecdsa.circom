@@ -12,8 +12,7 @@ template IsZero() {
     inv <-- in!=0 ? 1/in : 0;
 
     out <== -in*inv +1;
-
-    // in*out === 0;
+    in*out === 0;
 }
 
 /**
@@ -34,8 +33,8 @@ template ECDSA() {
     signal input pubKeyY;
 
     // TODO - Do we want more checks on s_inverse? (I think s_inv != 0 suffices)
-    component check0 = IsZero();
-    check0.in <== s_inverse;
+    // component check0 = IsZero();
+    // check0.in <== s_inverse;
     // check0.out === 0;
 
     // TODO - Its shocking that this is more efficient than big number multiply, perhaps we should double check
