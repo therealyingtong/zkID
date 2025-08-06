@@ -1,122 +1,118 @@
-pragma circom 2.1.6;
-include "jwt_tx_builder/array.circom";
-include "@zk-email/circuits/lib/base64.circom";
-include "circomlib/circuits/comparators.circom";
-include "circomlib/circuits/bitify.circom";
+// Keccak256 hash function (ethereum version).
+// For LICENSE check https://github.com/vocdoni/keccak256-circom/blob/master/LICENSE
+
+pragma circom 2.0.0;
+
 include "circomlib/circuits/gates.circom";
+include "circomlib/circuits/sha256/xor3.circom";
+include "circomlib/circuits/sha256/shift.circom"; // contains ShiftRight
 
-
-template Selector() {
-    signal input condition;
-    signal input in[2];
-    signal output out;
-
-    out <== condition * (in[0] - in[1]) + in[1];
+template Xor5(n) {
+    signal input a[n];
+    signal input b[n];
+    signal input c[n];
+    signal input d[n];
+    signal input e[n];
+    signal output out[n];
+    var i;
+    
+    component xor3 = Xor3(n);
+    for (i=0; i<n; i++) {
+        xor3.a[i] <== a[i];
+        xor3.b[i] <== b[i];
+        xor3.c[i] <== c[i];
+    }
+    component xor4 = XorArray(n);
+    for (i=0; i<n; i++) {
+        xor4.a[i] <== xor3.out[i];
+        xor4.b[i] <== d[i];
+    }
+    component xor5 = XorArray(n);
+    for (i=0; i<n; i++) {
+        xor5.a[i] <== xor4.out[i];
+        xor5.b[i] <== e[i];
+    }
+    for (i=0; i<n; i++) {
+        out[i] <== xor5.out[i];
+    }
 }
 
+template XorArray(n) {
+    signal input a[n];
+    signal input b[n];
+    signal output out[n];
+    var i;
 
-template DecodeSD(maxSdLen, byteLength) {
-    var charLength = 4 * ((byteLength + 2) \ 3);
-
-    signal input sdBytes[maxSdLen];
-    signal input sdLen;
-
-    signal stdB64[charLength];
-    component inRange[charLength];
-    component isDash[charLength];
-    component isUnder[charLength];
-    component dashSel[charLength];
-    component underSel[charLength];
-    component rangeSel[charLength];
-
-    for (var i = 0; i < charLength; i++) {
-
-        inRange[i] = LessThan(8);
-        inRange[i].in[0] <== i;
-        inRange[i].in[1] <== sdLen;
-
-        isDash[i]  = IsEqual();
-        isDash[i].in[0] <== sdBytes[i]; 
-        isDash[i].in[1] <== 45;
-        
-        isUnder[i] = IsEqual();
-        isUnder[i].in[0] <== sdBytes[i];
-        isUnder[i].in[1] <== 95;
-
-        dashSel[i] = Selector();
-        dashSel[i].condition <== isDash[i].out;
-        dashSel[i].in[0] <== 43;  // '+'
-        dashSel[i].in[1] <== sdBytes[i];
-
-        underSel[i] = Selector();
-        underSel[i].condition <== isUnder[i].out;
-        underSel[i].in[0] <== 47;  // '/'
-        underSel[i].in[1] <== dashSel[i].out;
-
-        rangeSel[i] = Selector();
-        rangeSel[i].condition <== inRange[i].out;
-        rangeSel[i].in[0] <== underSel[i].out;
-        rangeSel[i].in[1] <== 61;   // '='
-
-        stdB64[i] <== rangeSel[i].out;
+    component aux[n];
+    for (i=0; i<n; i++) {
+        aux[i] = XOR();
+        aux[i].a <== a[i];
+        aux[i].b <== b[i];
     }
-
-
-    signal output base64Out[byteLength];
-    
-    component base64 = Base64Decode(byteLength);
-    base64.in <== stdB64;
-    base64Out <== base64.out;
+    for (i=0; i<n; i++) {
+        out[i] <== aux[i].out;
+    }
 }
 
-// reduce a 256-bit hash modulo the secp256r1 scalar field order
-template HashModScalarField() {
-    signal input hash[256];  
-    signal output out;       
-    
-    component hashNum = Bits2Num(256);
-    for (var i = 0; i < 256; i++) {
-        hashNum.in[i] <== hash[255 - i];
+template XorArraySingle(n) {
+    signal input a[n];
+    signal output out[n];
+    var i;
+
+    component aux[n];
+    for (i=0; i<n; i++) {
+        aux[i] = XOR();
+        aux[i].a <== a[i];
+        aux[i].b <== 1;
     }
-    
-    var q = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551;
-    var qlo = q & ((2 ** 128) - 1);
-    var qhi = q >> 128;
-    
-    // 128 bit each
-    signal hashLo <-- hashNum.out & (2 ** (128) - 1);
-    signal hashHi <-- hashNum.out >> 128;
-    
-    component verifyLo = Num2Bits(128);
-    verifyLo.in <== hashLo;
-    component verifyHi = Num2Bits(128);
-    verifyHi.in <== hashHi;
-    
-    // hash >= q
-    component alpha = GreaterThan(129);
-    alpha.in[0] <== hashHi;
-    alpha.in[1] <== qhi;
-    
-    component beta = IsEqual();
-    beta.in[0] <== hashHi;
-    beta.in[1] <== qhi;
-    
-    component gamma = GreaterEqThan(129);
-    gamma.in[0] <== hashLo;
-    gamma.in[1] <== qlo;
-    
-    // hashhi == qhi && ashlo >= qlo
-    component betaANDgamma = AND();
-    betaANDgamma.a <== beta.out;
-    betaANDgamma.b <== gamma.out;
-    
-    component isHashGteQ = OR();
-    isHashGteQ.a <== betaANDgamma.out;
-    isHashGteQ.b <== alpha.out;
-    
-    // If hash >= q, hash - q; else hash
-    signal resultLo <== hashLo - isHashGteQ.out * qlo;
-    signal resultHi <== hashHi - isHashGteQ.out * qhi;
-    
-    out <== resultLo + resultHi * (2 ** 128);
+    for (i=0; i<n; i++) {
+        out[i] <== aux[i].out;
+    }
+}
+
+template OrArray(n) {
+    signal input a[n];
+    signal input b[n];
+    signal output out[n];
+    var i;
+
+    component aux[n];
+    for (i=0; i<n; i++) {
+        aux[i] = OR();
+        aux[i].a <== a[i];
+        aux[i].b <== b[i];
+    }
+    for (i=0; i<n; i++) {
+        out[i] <== aux[i].out;
+    }
+}
+
+template AndArray(n) {
+    signal input a[n];
+    signal input b[n];
+    signal output out[n];
+    var i;
+
+    component aux[n];
+    for (i=0; i<n; i++) {
+        aux[i] = AND();
+        aux[i].a <== a[i];
+        aux[i].b <== b[i];
+    }
+    for (i=0; i<n; i++) {
+        out[i] <== aux[i].out;
+    }
+}
+
+template ShL(n, r) {
+    signal input in[n];
+    signal output out[n];
+
+    for (var i=0; i<n; i++) {
+        if (i < r) {
+            out[i] <== 0;
+        } else {
+            out[i] <== in[ i-r ];
+        }
+    }
 }

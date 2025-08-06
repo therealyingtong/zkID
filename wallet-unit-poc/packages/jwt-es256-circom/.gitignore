@@ -104,7 +104,7 @@ dist
 .tern-port
 
 # builds
-build
+# build
 dist
 
 # circuit-specific powers of tau are ignored

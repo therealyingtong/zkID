@@ -590,6 +590,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     jwk-to-pem: "npm:^2.0.7"
     jws: "npm:^4.0.0"
+    keccak256-circom: "git+https://github.com/vocdoni/keccak256-circom"
     key-did-resolver: "npm:^4.0.0"
     mocha: "npm:^10.2.0"
     safe-buffer: "npm:^5.2.1"
@@ -1263,7 +1264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"circomlib@npm:^2.0.5":
+"circomlib@npm:^2.0.1, circomlib@npm:^2.0.5":
   version: 2.0.5
   resolution: "circomlib@npm:2.0.5"
   checksum: 10c0/6709e3df9e16c09015e69f9ee01d5fde340b888743a204be27e37880337db61f013f4a6b9573935fb410ddb02a0e89367edf509b89182a0c2e07c8a4777c91a4
@@ -2326,6 +2327,15 @@ __metadata:
     jwa: "npm:^2.0.0"
     safe-buffer: "npm:^5.0.1"
   checksum: 10c0/f1ca77ea5451e8dc5ee219cb7053b8a4f1254a79cb22417a2e1043c1eb8a569ae118c68f24d72a589e8a3dd1824697f47d6bd4fb4bebb93a3bdf53545e721661
+  languageName: node
+  linkType: hard
+
+"keccak256-circom@git+https://github.com/vocdoni/keccak256-circom":
+  version: 0.0.1
+  resolution: "keccak256-circom@https://github.com/vocdoni/keccak256-circom.git#commit=af3e89816b46366e3fb9ff551be819357637f09b"
+  dependencies:
+    circomlib: "npm:^2.0.1"
+  checksum: 10c0/3038f6dd27a51a676a99816bb1f326250ba491ff2bccbc201c889e263ea10c0bb0d84c4a66c9d08e0490d009d425562c03b7e815441ecef8a080bd03698f4796
   languageName: node
   linkType: hard
 

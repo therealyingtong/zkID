@@ -3,5 +3,10 @@
     "file": "add",
     "template": "Add",
     "params": []
+  },
+  "keccak": {
+    "file": "keccak",
+    "template": "Keccak",
+    "params": [256, 256]
   }
 }

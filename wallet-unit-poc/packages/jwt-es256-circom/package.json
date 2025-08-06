@@ -34,6 +34,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.7",
     "jws": "^4.0.0",
+    "keccak256-circom": "git+https://github.com/vocdoni/keccak256-circom",
     "key-did-resolver": "^4.0.0",
     "mocha": "^11.1.0",
     "safe-buffer": "^5.2.1"
