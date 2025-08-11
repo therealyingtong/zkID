@@ -8,9 +8,9 @@ use circom_scotia::{generate_witness_from_wasm, r1cs::CircomConfig, synthesize};
 use ff::{PrimeField, PrimeFieldBits};
 use spartan2::{
     R1CSSNARK,
+    bellpepper::{r1cs::SpartanShape, shape_cs::ShapeCS},
     provider::T256HyraxEngine,
     traits::{Engine, circuit::SpartanCircuit, snark::R1CSSNARKTrait},
-    bellpepper::{shape_cs::ShapeCS, r1cs::SpartanShape}
 };
 use std::{env::current_dir, fs::File, io::Read, path::PathBuf, time::Instant};
 use tracing::info;
@@ -111,7 +111,7 @@ fn main() {
 
     // PROVE
     let t0 = Instant::now();
-    let proof = R1CSSNARK::<E>::prove(&pk, circuit.clone(), true).expect("prove failed");
+    let proof = R1CSSNARK::<E>::prove(&pk, circuit.clone(), false).expect("prove failed");
     let prove_ms = t0.elapsed().as_millis();
     info!(elapsed_ms = prove_ms, "prove");
 
