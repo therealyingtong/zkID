@@ -16,15 +16,13 @@ interface JwtCircuitParams {
 export function generateJwtCircuitParams(params: number[]): JwtCircuitParams {
   return {
     es256: {
-      n: params[0],
-      k: params[1],
-      maxMessageLength: params[2],
+      maxMessageLength: params[0],
     },
-    maxB64HeaderLength: params[3],
-    maxB64PayloadLength: params[4],
-    maxMatches: params[5],
-    maxSubstringLength: params[6],
-    maxClaimLength: params[7],
+    maxB64HeaderLength: params[1],
+    maxB64PayloadLength: params[2],
+    maxMatches: params[3],
+    maxSubstringLength: params[4],
+    maxClaimLength: params[5],
   };
 }
 
