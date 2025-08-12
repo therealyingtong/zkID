@@ -1,5 +1,5 @@
 import { strict as assert } from "assert";
-import { Es256CircuitParams, generateES256Inputs, JwkEcdsaPublicKey, PemPublicKey } from "./es256";
+import { Es256CircuitParams, generateES256Inputs, JwkEcdsaPublicKey, PemPublicKey } from "./es256.ts";
 import { encodeClaims, stringToPaddedBigIntArray } from "./utils.ts";
 
 // The JWT Circuit Parameters

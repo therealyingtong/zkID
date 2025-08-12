@@ -2,13 +2,13 @@
 //! circuit with varying message lengths
 //! Run with: `RUST_LOG=info cargo run --release
 #![allow(non_snake_case)]
-use bellpepper_core::{ConstraintSystem, SynthesisError, num::AllocatedNum};
+use bellpepper_core::{num::AllocatedNum, ConstraintSystem, SynthesisError};
 use circom_scotia::{generate_witness_from_wasm, r1cs::CircomConfig, synthesize};
 use spartan2::{
-    R1CSSNARK,
     bellpepper::{r1cs::SpartanShape, shape_cs::ShapeCS},
     provider::T256HyraxEngine,
-    traits::{Engine, circuit::SpartanCircuit, snark::R1CSSNARKTrait},
+    traits::{circuit::SpartanCircuit, snark::R1CSSNARKTrait, Engine},
+    R1CSSNARK,
 };
 use std::{env::current_dir, fs::File, io::Read, path::PathBuf, time::Instant};
 use tracing::info;
@@ -28,7 +28,7 @@ impl SpartanCircuit<E> for ECDSACircuit {
         _: &[AllocatedNum<Scalar>],
         _: Option<&[Scalar]>,
     ) -> Result<(), SynthesisError> {
-        let root = current_dir().unwrap().join("packages/jwt-es256-circom");
+        let root = current_dir().unwrap().join("../circom");
         let witness_dir = root.join("build/ecdsa/ecdsa_js");
         let wtns = witness_dir.join("main.wasm");
         let r1cs = witness_dir.join("ecdsa.r1cs");
@@ -36,7 +36,7 @@ impl SpartanCircuit<E> for ECDSACircuit {
         let witness_input_json: String = {
             let path = current_dir()
                 .unwrap()
-                .join("packages/jwt-es256-circom/inputs/ecdsa/default.json");
+                .join("../circom/inputs/ecdsa/default.json");
 
             let mut file = File::open(path).unwrap();
             let mut witness_input = String::new();

@@ -1,5 +1,5 @@
 [package]
-name = "wallet-unit-poc"
+name = "ecdsa-spartan2"
 version = "0.1.0"
 edition = "2024"
 
